@@ -28,6 +28,8 @@ async function refresh() {
     {label:'OPEN PORTS',  val:d.open_ports,          sub:d.high_risk_ports+' high-risk'},
     {label:'INTERESTING', val:d.interesting_hosts,   sub:'manual targets'},
     {label:'JS FINDINGS', val:d.js_findings,         sub:'secrets & endpoints'},
+    {label:'TECH CHECKS', val:d.tech_findings,       sub:'confirmed issues'},
+    {label:'CLOUD',       val:d.cloud_findings,      sub:'exposures'},
     {label:'CHANGES 24H', val:d.new_changes,         sub:'last 24 hours'},
     {label:'SCREENSHOTS', val:d.screenshots,         sub:'captured'},
     {label:'SCANS',       val:d.total_scans,         sub:d.last_scan_time?ago(d.last_scan_time):'none'},

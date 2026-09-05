@@ -127,6 +127,8 @@ type DashboardStats struct {
 	ActiveHosts      int        `json:"active_hosts"`
 	OpenPorts        int        `json:"open_ports"`
 	JSFindings       int        `json:"js_findings"`
+	TechFindings     int        `json:"tech_findings"`
+	CloudFindings    int        `json:"cloud_findings"`
 	NewChanges       int        `json:"new_changes"`
 	LastScanTime     *time.Time `json:"last_scan_time"`
 	TotalScans       int        `json:"total_scans"`
