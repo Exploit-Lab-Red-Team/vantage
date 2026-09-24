@@ -4,51 +4,52 @@
 
 # Vantage
 
-**Red Team Attack Surface Management Platform**
+**Continuous attack surface intelligence for startups, SaaS companies, and security teams.**
 
-Fully local. No paid APIs. No cloud. Built for red teams.
+Discover, map, and monitor internet-facing assets to understand what your organization exposes from the outside.
 
-[![Go Version](https://img.shields.io/badge/Go-1.22+-00ADD8?logo=go&logoColor=white)](https://golang.org)
+[![Go Version](https://img.shields.io/badge/Go-1.22+-00ADD8?logo=go\&logoColor=white)](https://golang.org)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS-blue.svg)](https://github.com/expl0itlab/vantage)
+[![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS-blue.svg)](https://github.com/VantageASM/vantage)
 
 ---
 
 ## What Vantage Does
 
-- **Subdomain enumeration** — subfinder, assetfinder, optional DNS bruteforce
-- **HTTP probing** — live host detection, tech fingerprinting, TLS info (httpx)
-- **Port scanning** — connect scan, top-100/1000/custom ports (naabu)
-- **Banner grabbing** — real TCP banners with service/version parsing
-- **Attack surface mapping** — 50+ tech/path/port signals with actionable notes per host
-- **Screenshots** — auto-capture every live host (gowitness v3)
-- **Network expansion** — found IP → scan the /24 for more hosts (aggressive only)
-- **JS analysis** — extract secrets, API keys, endpoints from JavaScript files
-- **Enhanced secrets detection** — 40+ patterns (cloud keys, JWTs, SSH/PGP keys, API tokens), Shannon entropy filtering, context capture
-- **Tech check packs** — WordPress, Laravel, Django, Next.js, Jenkins, GitLab, Grafana, K8s, Elasticsearch, Docker — 10 packs, ~50 checks
-- **Cloud asset discovery** — S3/Azure Blob/GCP Storage bucket detection, cloud IP ranges, K8s endpoints, Docker APIs
-- **Smart alerts** — Telegram notifications with dedup, rate limiting, severity filtering per event type
-- **Change tracking** — every new asset/host/port recorded as a change event
-- **Exports** — Caido scope JSON, Burp Suite XML, Metasploit .rc, CSV, target lists
-- **Dashboard** — dark web UI with SSE live updates
+* **Subdomain enumeration** — subfinder, assetfinder, optional DNS bruteforce
+* **HTTP probing** — live host detection, technology fingerprinting, TLS information
+* **Port scanning** — connect scanning, top-100/1000/custom ports
+* **Banner grabbing** — service and version detection from real TCP banners
+* **Attack surface mapping** — 50+ technology, path, and port signals with actionable notes
+* **Screenshots** — automatic screenshots of live hosts
+* **Network expansion** — discovered IP → `/24` expansion in aggressive mode
+* **JavaScript analysis** — extract endpoints, API keys, and potential secrets
+* **Secrets detection** — cloud keys, JWTs, SSH/PGP keys, API tokens, entropy filtering, and context capture
+* **Technology checks** — WordPress, Laravel, Django, Next.js, Jenkins, GitLab, Grafana, Kubernetes, Elasticsearch, Docker, and more
+* **Cloud asset discovery** — S3/Azure/GCP storage, cloud IP ranges, Kubernetes endpoints, Docker APIs
+* **Alerts** — Telegram notifications with deduplication, rate limiting, and severity filtering
+* **Change tracking** — record newly discovered assets, hosts, ports, and other changes
+* **Exports** — Caido, Burp Suite, Metasploit, CSV, target lists, and JSON
+* **Dashboard** — local web dashboard with live scan activity
 
 ---
 
 ## Scan Profiles
 
-| Profile | Ports | Rate | Banner | Screenshot | Bruteforce | Net Expand |
-|---|---|---|---|---|---|---|
-| `stealth` | 80,443,8080,8443 | 50/s | no | no | no | no |
-| `standard` | top-100 | 500/s | yes | yes | no | no |
-| `aggressive` | top-1000 | 2000/s | yes | yes | yes | yes |
+| Profile      | Ports            |   Rate | Banner | Screenshot | Bruteforce | Net Expand |
+| ------------ | ---------------- | -----: | ------ | ---------- | ---------- | ---------- |
+| `stealth`    | 80,443,8080,8443 |   50/s | No     | No         | No         | No         |
+| `standard`   | top-100          |  500/s | Yes    | Yes        | No         | No         |
+| `aggressive` | top-1000         | 2000/s | Yes    | Yes        | Yes        | Yes        |
 
 ---
 
 ## Requirements
 
-- Linux (x86_64 or arm64)
-- Go 1.22+
-- gcc, libsqlite3-dev (for CGO sqlite)
+* Linux (x86_64 or arm64)
+* Go 1.22+
+* gcc
+* libsqlite3-dev
 
 ---
 
@@ -57,7 +58,7 @@ Fully local. No paid APIs. No cloud. Built for red teams.
 ### Quick Install
 
 ```bash
-git clone https://github.com/expl0itlab/vantage.git
+git clone https://github.com/VantageASM/vantage.git
 cd vantage
 chmod +x scripts/install.sh
 ./scripts/install.sh
@@ -68,13 +69,11 @@ chmod +x scripts/install.sh
 ```bash
 sudo apt-get install -y gcc libsqlite3-dev build-essential
 
-# Install Go 1.22
-wget https://go.dev/dl/go1.22.4.linux-amd64.tar.gz
-sudo tar -C /usr/local -xzf go1.22.4.linux-amd64.tar.gz
-export PATH=$PATH:/usr/local/go/bin
+# Install Go 1.22+
+# Then install the required reconnaissance tools
 
-# Install recon tools
 export PATH=$PATH:$(go env GOPATH)/bin
+
 go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 go install github.com/tomnomnom/assetfinder@latest
 go install github.com/projectdiscovery/httpx/cmd/httpx@latest
@@ -101,86 +100,116 @@ docker compose up -d
 
 ```bash
 # One-shot scans
-./vantage scan -d target.com                      # standard profile
-./vantage scan -d target.com -p stealth           # passive, low noise
-./vantage scan -d target.com -p aggressive        # everything, maximum coverage
+./vantage scan -d target.com
+./vantage scan -d target.com -p stealth
+./vantage scan -d target.com -p aggressive
 
-# Dashboard (recommended for red team use)
-./vantage serve                                   # http://127.0.0.1:8080
+# Dashboard
+./vantage serve
 
-# Headless scheduler (no UI, runs on cron)
+# Headless monitoring
 ./vantage monitor
 
-# Scan all targets from config
+# Scan configured targets
 ./vantage scan
+```
+
+The dashboard runs locally at:
+
+```text
+http://127.0.0.1:8080
 ```
 
 ---
 
 ## Dashboard Pages
 
-| Page | What It Shows |
-|---|---|
-| **Dashboard** | Stats, recent scans, live activity log |
-| **Assets** | All subdomains with IP, type, first seen |
-| **Live Hosts** | HTTP/S hosts — status, title, tech, screenshots |
-| **Ports** | All open ports with service, version, banner |
-| **Attack Surface** | Per-host attack notes — what to check and how |
-| **Interesting** | Admin panels, login pages, APIs, dev envs, risky ports |
-| **JS Analysis** | Secrets, API keys, endpoints extracted from JS files |
-| **Tech Checks** | Technology-specific check results — WordPress, Jenkins, Grafana, etc. |
-| **Cloud Assets** | S3/Azure/GCP buckets, K8s endpoints, Docker APIs, cloud IP ranges |
-| **Alerts** | Telegram alert history — what was sent and when |
-| **Changes** | Every new finding across all scans |
-| **Scans** | Full scan history with export |
+| Page               | What It Shows                                                              |
+| ------------------ | -------------------------------------------------------------------------- |
+| **Dashboard**      | Statistics, recent scans, and live activity                                |
+| **Assets**         | Discovered subdomains, IPs, types, and first-seen data                     |
+| **Live Hosts**     | HTTP/S hosts, status, titles, technologies, and screenshots                |
+| **Ports**          | Open ports, services, versions, and banners                                |
+| **Attack Surface** | Per-host attack surface signals and notes                                  |
+| **Interesting**    | Admin panels, login pages, APIs, development environments, and risky ports |
+| **JS Analysis**    | Discovered endpoints, secrets, and API keys                                |
+| **Tech Checks**    | Technology-specific security checks                                        |
+| **Cloud Assets**   | Cloud storage, Kubernetes, Docker, and cloud infrastructure findings       |
+| **Alerts**         | Notification history                                                       |
+| **Changes**        | Newly discovered or changed assets and services                            |
+| **Scans**          | Scan history and exports                                                   |
 
 ---
 
-## Exports (from Dashboard)
+## Exports
 
-| Export | Use For |
-|---|---|
-| Caido scope JSON | Import as Caido target scope |
-| Burp Suite XML | Import as Burp target scope |
-| Metasploit .rc | `msfconsole -r file.rc` — pre-loaded modules per service |
-| CSV (assets/hosts/ports/js) | Reporting, spreadsheets |
-| URL list | Feed to any other tool |
-| IP:port list | netcat, masscan, custom scripts |
-| JSON export | Full domain snapshot |
+| Export           | Use For                                     |
+| ---------------- | ------------------------------------------- |
+| Caido scope JSON | Import targets into Caido                   |
+| Burp Suite XML   | Import targets into Burp Suite              |
+| Metasploit `.rc` | Load discovered services into Metasploit    |
+| CSV              | Reporting and analysis                      |
+| URL list         | Feed URLs into other security tools         |
+| IP:port list     | Feed discovered services into other tooling |
+| JSON             | Full scan snapshot                          |
 
 ---
 
 ## Configuration
 
-Copy `vantage.example.yaml` to `vantage.yaml` and edit:
+Copy the example configuration:
 
 ```bash
 cp vantage.example.yaml vantage.yaml
 nano vantage.yaml
 ```
 
-Key config sections:
+Key configuration sections:
 
-- `alerting` — Telegram bot token/chat ID, min severity, event type toggles (new_subdomain, high_risk_port, js_secret, interesting_host, host_down, new_technology)
-- `tech_checks` — Enable/disable tech check packs, thread count, timeout
-- `cloud_recon` — Enable/disable cloud asset discovery, timeout
+* `alerting` — Telegram notifications, severity thresholds, and event types
+* `tech_checks` — enabled checks, threads, and timeouts
+* `cloud_recon` — cloud discovery and timeout settings
 
-See `vantage.example.yaml` for all available options with documentation.
+See `vantage.example.yaml` for the complete configuration reference.
+
+---
+
+## Vantage Pro
+
+**Vantage Pro** is the hosted version of Vantage for organizations that need continuous external attack surface visibility without managing scanning infrastructure themselves.
+
+Vantage Pro adds capabilities including:
+
+* Continuous monitoring
+* Scheduled scanning
+* Organization and team management
+* Authorized asset verification
+* Historical exposure tracking
+* Change alerts
+* Security reports
+* Integrations
+* Managed scanning infrastructure
+
+The Vantage open-source engine is the foundation of Vantage Pro.
+
+---
+
+## Responsible Use
+
+Vantage is intended for authorized security testing, attack surface discovery, and defensive security operations.
+
+Only scan systems and infrastructure you own or have explicit authorization to assess.
+
+You are responsible for complying with applicable laws, regulations, contracts, and testing policies.
 
 ---
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
 ---
 
 ## License
 
-MIT License. See [LICENSE](LICENSE).
-
----
-
-## Built by
-
-[Exploit Lab](https://github.com/expl0itlab)
+Vantage is released under the [MIT License](LICENSE).
